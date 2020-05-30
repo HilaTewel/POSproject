@@ -1,3 +1,5 @@
+package model;
+
 abstract public class Worker {
     private String name;
     private int ID;
@@ -16,5 +18,5 @@ abstract public class Worker {
 
     public void setID(int ID) {
         this.ID = ID;
-    }
-}
+    }}
+
