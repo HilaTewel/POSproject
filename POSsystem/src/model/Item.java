@@ -4,8 +4,8 @@ public class Item extends ProductSpecification {
     private static int BarcodeCounter = 0;
     private int Barcode;
 
-    public Item(String name, int ID, float price, int colorCode) {
-        super(name, ID, price, colorCode);
+    public Item(String name, float price, int colorCode) {
+        super(name, price, colorCode);
         Item.updateCounter();
         this.Barcode = Item.BarcodeCounter;
     }

@@ -1,7 +1,10 @@
 package View;
 
+import Controller.Controller;
 import model.Worker;
+import Controller.OpenNewDealController;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -13,7 +16,7 @@ public class MyCLIView implements View, Runnable{
 
     private Scanner input; //gets a system.in in driver to get a user input
     private PrintWriter output; //gets an system.out in driver to write to console
-    private ModuleLayer.Controller controller; //not sure this is the controller needed
+    private OpenNewDealController openDealController; //not sure this is the controller needed
 
     public MyCLIView(InputStream in, OutputStream out) {
         this.input = new Scanner(in);
@@ -26,8 +29,8 @@ public class MyCLIView implements View, Runnable{
     }
 
     @Override
-    public void setController(ModuleLayer.Controller controller) {
-        this.controller = controller;
+    public void setOpenDealController(OpenNewDealController controller) {
+        this.openDealController = controller;
     }
 
     @Override
@@ -47,6 +50,7 @@ public class MyCLIView implements View, Runnable{
             switch (choice){
                 case 1 :
                 {
+
                     //controler.startShift()
                     //here a shift constructor is called
                     //in shift should check if current date in shift is equal to todays date
@@ -63,12 +67,17 @@ public class MyCLIView implements View, Runnable{
 
                 case 2 :
                 {
+                    try {
+                        openDealController.OpenNewDeal();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    write("Deal was done successfuly!");
                     //call controller method to open new deal controller.openNewDeal()
                     //controller will call 3 view methodes for this:
                     // enteringItems()
                     // addingPayment()
-                    // addingHelpingWorker
-
+                    // addingHelpingWorker()
                     break;
                 }
 
@@ -77,7 +86,6 @@ public class MyCLIView implements View, Runnable{
                     //calling controller method of closing shift
                     //getting reports from controller
                     this.write("press 1 to watch daily report");
-
                     break;
                 }
                 case 4 :
@@ -103,34 +111,41 @@ public class MyCLIView implements View, Runnable{
 
     public void enteringItems(){
         this.write("please enter items barcode to stop enter -1 ");
-        int itemCode = this.input.nextInt();
-
-        while ( itemCode != -1){
-            boolean itemExists = false;
+        int barcode = this.input.nextInt();
+        while ( barcode != -1){
+            //call method in controller that try to add item
+            boolean itemExists = this.openDealController.addItem(barcode);
             if (itemExists){
                 this.write("item add successfully");
             } else{
                 this.write("No such item in stock");
             }
-            itemCode = this.input.nextInt();
+            barcode = this.input.nextInt();
             //another controller method : controller.addItem(int id) returns a boolean
             //controller returns wether item exists in items list (file) or not
             //if exists call method in model to add it to deal
-
         }
-        //in model check wether item list is empty
     }
 
     public void addingPayment(){
         this.write("Now add payment method");
         this.write("press 1 for 'cash' or 2 for 'credit card':");
-        int paymentType = this.input.nextInt();
-        while (paymentType !=1 && paymentType != 2){
+        String paymentType;
+        int choice = this.input.nextInt();
+        while (choice !=1 && choice != 2){
             this.write("not a valid value: press 1 for 'cash' or 2 for 'credit card':");
-            paymentType = this.input.nextInt();
+            choice = this.input.nextInt();
         }
+
+        if(choice == 1){
+            paymentType = "cash";
+        } else{
+            paymentType = "credit card";
+        }
+
         this.write("now enter amount of money paid");
         int paymentAmount = this.input.nextInt();
+        openDealController.addNewPayment(paymentType, paymentAmount);
         //here method of controller.addPayment();
 
     }
@@ -138,7 +153,7 @@ public class MyCLIView implements View, Runnable{
     public void addingHelpingWorker(){
         this.write("please choose a helping worker name");
         //get from controller list of workers in current shift controller.getWorkersList
-        List<Worker> workers = new ArrayList<>();
+        List<Worker> workers = openDealController.getWorkersList();
         int i = 0;
         for (Worker worker: workers){
             this.write("enter " + i + " for " + worker.getName());
@@ -150,6 +165,9 @@ public class MyCLIView implements View, Runnable{
             this.write("not a valid choice");
             workerChoice = this.input.nextInt();
         }
+
+        Worker helpingWorker = workers.get(workerChoice);
+        openDealController.addHelpingWorker(helpingWorker);
         //controller method to add chosen worker to deal controller.addHelpingWorker();
     }
 }

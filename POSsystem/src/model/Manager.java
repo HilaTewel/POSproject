@@ -1,6 +1,12 @@
 package model;
 
 public class Manager extends Worker{
+
+    public Manager(final String name, final int ID, final int password) {
+        super(name, ID);
+        this.password = password;
+    }
+
     private int password;
 
     public int getPassword() {

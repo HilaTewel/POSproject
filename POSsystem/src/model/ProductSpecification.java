@@ -8,9 +8,9 @@ abstract public class ProductSpecification {
     protected float price;
     protected int colorCode;
 
-     public ProductSpecification(final String name, final int ID, final float price, final int colorCode) {
+     public ProductSpecification(final String name,  final float price, final int colorCode) {
          this.name = name;
-         this.ID = ID;
+         setID();
          this.price = price;
          this.colorCode = colorCode;
      }
@@ -30,7 +30,7 @@ abstract public class ProductSpecification {
          return this.ID;
      }
 
-     public void setID() {
+     private void setID() {
          ProductSpecification.updateCounter();
          this.ID = ProductSpecification.IDcounter;
      }

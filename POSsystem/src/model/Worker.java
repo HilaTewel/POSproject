@@ -4,6 +4,11 @@ abstract public class Worker {
     private String name;
     private int ID;
 
+    public Worker(final String name, final int ID) {
+        this.name = name;
+        this.ID = ID;
+    }
+
     public String getName() {
         return name;
     }
