@@ -1,3 +1,5 @@
+package model;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -12,6 +14,18 @@ public class Shift {
     private float totalIncome;
     private Date date;
 
+    static Shift shift;
+
+    private Shift()
+    {
+        super();
+    }
+
+    public static Shift getShift(){
+        if(shift==null)
+            shift=new Shift();
+        return shift;
+    }
 
 
     public void add_new_worker(Worker new_worker)
